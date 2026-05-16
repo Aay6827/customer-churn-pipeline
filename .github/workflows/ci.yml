@@ -1,0 +1,32 @@
+name: Pipeline CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.14"
+
+    - name: Install dependencies
+      run: pip install -r requirements.txt pytest
+
+    - name: Run data quality tests
+      run: pytest tests/ -v
+
+    - name: Check code style
+      run: |
+        pip install flake8
+        flake8 scripts/ --max-line-length=100 --ignore=E501
+        
